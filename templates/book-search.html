@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Search Book Page</title>
+{% endblock %}
+
+{% block body %}
+    <form name="BookSearch" method="POST">
+        <input autofocus="autofocus" name="book_title" id="book_title" maxlength="150">
+        <input type="submit" name="Submit" value="Search">
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ISBN Number</th>
+                <th>Book Name</th>
+                <th>Publishing Year</th>
+                <th>Publisher</th>
+                <th>Number of Copies</th>
+                <th>Image URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in data %}
+                <tr>
+                    <td>{{ book[0] }}</td>
+                    <td>{{ book[1] }}</td>
+                    <td>{{ book[2] }}</td>
+                    <td>{{ book[3] }}</td>
+                    <td>{{ book[4] }}</td>
+                    <td>{{ book[5] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
