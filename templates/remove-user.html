@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Remove User</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Remove User</h2>
+    <form name="remove-user" method="POST">
+        {{ form.csrf_token }}
+        <label for="id">User ID:</label>
+        {{ form.id }}
+        <br>
+        <input type="submit" value="Remove User">
+    </form>
+{% endblock %}

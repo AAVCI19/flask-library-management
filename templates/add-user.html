@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Add User</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Add User</h2>
+    <form name="add-user" method="POST">
+        {{ form.csrf_token }}
+    
+        <!-- 
+        <label for="username">Username:</label>
+        {{ form.username }}
+        <br>
+        <label for="password">Password:</label>
+        {{ form.password }}
+        <br>
+        -->
+        <label for="id">ID:</label>
+        {{ form.id }}
+        <br>
+        <label for="address">Address:</label>
+        {{ form.address }}
+        <br>
+        <label for="age">Age:</label>
+        {{ form.age }}
+        <br>
+        <input type="submit" value="Add User">
+    </form>
+{% endblock %}

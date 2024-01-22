@@ -1,23 +1,25 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Library Management System</title>
+    <title>Library Management System</title>
 {% endblock %}
 
 {% block body %}
-<h1>Your Library Management System</h1>
-<nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/search-book">Search Book</a></li>
-        <li><a href="/borrowed-books">Borrowed Books</a></li>
-        <li><a href="/user-profile">User Profile</a></li>
-    </ul>
-    <br>
-    <ul>
-        {% for row in data %}
-        <li>{{ row }}</li>
-        {% endfor %}
-    </ul>
-</nav>
+    <h1>Your Library Management System</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/search-book">Search Book</a></li>
+            <li><a href="/borrowed-books">Borrowed Books</a></li>
+            <li><a href="/add-user">Add User</a></li>
+            <li><a href="/remove-user">Remove User</a></li>
+            <li><a href="/edit-user">Edit User</a></li>
+        </ul>
+        <br>
+        <ul>
+            {% for row in data %}
+                <li>{{ row }}</li>
+            {% endfor %}
+        </ul>
+    </nav>
 {% endblock %}
