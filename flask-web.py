@@ -9,6 +9,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'library'
 app.config['MYSQL_HOST'] = 'localhost'
+app.secret_key = "flaskproje123*"
 
 mysql = mysql.connector.connect(
     user=app.config['MYSQL_USER'],
@@ -44,6 +45,7 @@ def search_page():
         data = cursor.fetchall()
         if not data:
             flash('No books found with the given search criteria.', 'error')
+            print("hello")
             return render_template("book-search.html", form=form)
         return render_template("show-books.html", data=data)
     return render_template("book-search.html", form = form)
