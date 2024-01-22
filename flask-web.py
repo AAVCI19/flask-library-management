@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 import mysql.connector
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 
@@ -6,7 +6,7 @@ from wtforms import Form, BooleanField, StringField, PasswordField, validators
 
 app = Flask(__name__)
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'library'
 app.config['MYSQL_HOST'] = 'localhost'
 
@@ -28,6 +28,7 @@ def home_page():
 
 class SearchForm(Form):
     book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
+    
 
 
 
@@ -36,15 +37,16 @@ class SearchForm(Form):
 def search_page():
     cursor = mysql.cursor()
     form = SearchForm(request.form)
-    print(form.validate())
-    print(form.book_title)
     if request.method == 'POST' and form.validate():
         name = form.book_title.data
         query = "SELECT * FROM books WHERE books.book_title Like %s"
-        cursor.execute(query, ('%' + name + '%',))
+        result = cursor.execute(query, ('%' + name + '%',))
         data = cursor.fetchall()
-        return render_template("book-search.html", data=data)
-    return render_template("book-search.html")
+        if not data:
+            flash('No books found with the given search criteria.', 'error')
+            return render_template("book-search.html", form=form)
+        return render_template("show-books.html", data=data)
+    return render_template("book-search.html", form = form)
 
 def add_book():
     pass
