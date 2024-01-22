@@ -56,11 +56,9 @@ def edit_book():
 
 
 
+
 class AddUserForm(Form):
-    """username = StringField('Username', [validators.Length(min=1, max=50)])
-    password = PasswordField('Password', [validators.Length(min=6, max=50)])
-    """
-    id = StringField('User ID', [validators.Length(min=1, max=100000)])
+    #id = StringField('User ID', [validators.Length(min=1, max=100000)])
 
     address = StringField('Address', [validators.Length(min=1, max=100)])
     age = StringField('Age', [validators.Optional(), validators.Regexp('^\d+$', message='Age must be a number')])
@@ -69,14 +67,28 @@ class AddUserForm(Form):
 
 @app.route("/add-user", methods=['GET', 'POST'])
 def add_user():
+   
     cursor = mysql.cursor()
+    query = "Select user_id from users"
+
+    cursor.execute(query)
+    user_id = int(cursor.fetchall()[-1][0])
+    print(user_id)
+    
+    cursor2 = mysql.cursor()
     form = AddUserForm(request.form)
     if request.method == 'POST' and form.validate():
-        id = form.id.data
+        user_id += 1
         address = form.address.data
         age = form.age.data
-        query = "INSERT INTO users (user_id, address, age) VALUES (%s, %s, %s)"
-        cursor.execute(query, (id, address, age))
+        query2 = "INSERT INTO users (user_id, address, age) VALUES (%s,%s, %s)"
+        
+        result = cursor2.execute(query2, (user_id, address, age)) 
+        print(result)
+        if(result):
+            
+            print(result)    
+            
         mysql.commit()
         return redirect(url_for('home_page'))
     return render_template("add-user.html", form=form)
@@ -98,40 +110,18 @@ def remove_user():
     return render_template("remove-user.html", form=form)
 
 
-"""
-@app.route("/edit-user/<username>", methods=['GET', 'POST'])
-def edit_user(username):
-    form = AddUserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        new_id = form.id.data
-        new_address = form.address.data
-        new_age = form.age.data
-        # Example: cursor.execute("UPDATE users SET username = %s, password = %s WHERE username = %s", (new_username, new_password, username))
-        cursor.execute("UPDATE users SET user_id = %s, address = %s, age = %s WHERE id = %s", (new_id, new_address, new_age, id))
-        mysql.commit()
-        return redirect(url_for('home_page'))
-    # Fetch the existing user data and pre-fill the form fields
-    # Example: cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-    cursor.execute("SELECT * FROM users WHERE id = %s", (id))
-    # existing_user_data = cursor.fetchone()
-    existing_user_data = cursor.fetchone()
-    # form.username.data = existing_user_data['username']
-    form.id.data = existing_user_data['user_id']
-    # form.password.data = existing_user_data['password']
-    return render_template("edit-user.html", form=form)
-
-"""
-
 class EditUserForm(Form):
     user_id = StringField('User ID', [validators.Length(min=1, max=100000)])
     address = StringField('Address', [validators.Length(min=1, max=100)])
     age = StringField('Age', [validators.Optional(), validators.Regexp('^\d+$', message='Age must be a number')])
+
 
 @app.route("/edit-user", methods=['GET', 'POST'])
 def edit_user():
     cursor = mysql.cursor()
     form = EditUserForm(request.form)
     user = None  # Initialize user as None
+    error_message = None  # Initialize error_message as None
 
     if request.method == 'POST' and form.validate():
         user_id = form.user_id.data
@@ -152,15 +142,8 @@ def edit_user():
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
 
-"""
 
-def add_user():
-    pass
-def remove_user():
-    pass
-def edit_user():
-    pass
-"""
+
 
 def issue_book():
     pass
