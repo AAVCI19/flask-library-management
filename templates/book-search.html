@@ -118,7 +118,13 @@
                     <td>{{ book[2] }}</td>
                     <td>{{ book[3] }}</td>
                     <td>{{ book[4] }}</td>
-                    <td><img src="{{ book[5] }}" alt="Book Image" style="max-width: 100px; max-height: 100px;"></td>
+                    <td>
+                        {% if book[5] %}
+                            <img src="{{ book[5] }}" alt="Book Image" style="max-width: 100px; max-height: 100px;">
+                        {% else %}
+                            Image source deleted
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
