@@ -98,7 +98,7 @@
                 <th>Publishing Year</th>
                 <th>Publisher</th>
                 <th>Number of Copies</th>
-                <th>Image URL</th>
+                <th>Image</th> 
             </tr>
         </thead>
         <tbody>
@@ -109,7 +109,7 @@
                     <td>{{ book[2] }}</td>
                     <td>{{ book[3] }}</td>
                     <td>{{ book[4] }}</td>
-                    <td>{{ book[5] }}</td>
+                    <td><img src="{{ book[5] }}" alt="Book Image" style="max-width: 100px; max-height: 100px;"></td>
                 </tr>
             {% endfor %}
         </tbody>

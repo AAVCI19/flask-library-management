@@ -40,8 +40,8 @@ def search_page():
     print(form.book_title)
     if request.method == 'POST' and form.validate():
         name = form.book_title.data
-        query = "SELECT * FROM books WHERE books.book_title Like %s"
-        cursor.execute(query, ('%' + name + '%',))
+        query = "SELECT * FROM books WHERE books.book_title Like %s OR books.ISBN LIKE %s"
+        cursor.execute(query, ('%' + name + '%', '%' + name + '%'))
         data = cursor.fetchall()
         return render_template("book-search.html", data=data)
     return render_template("book-search.html")
