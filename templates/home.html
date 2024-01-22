@@ -2,10 +2,57 @@
 
 {% block head %}
     <title>Library Management System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e7e1;
+            margin: 0; 
+        }
+
+        .header {
+            background-color: #03a678; 
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0; 
+        }
+
+        nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        a:hover {
+            color: #f05a26;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-    <h1>Your Library Management System</h1>
+    <div class="header">
+        <h1>Library Management System</h1>
+    </div>
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
@@ -14,12 +61,6 @@
             <li><a href="/add-user">Add User</a></li>
             <li><a href="/remove-user">Remove User</a></li>
             <li><a href="/edit-user">Edit User</a></li>
-        </ul>
-        <br>
-        <ul>
-            {% for row in data %}
-                <li>{{ row }}</li>
-            {% endfor %}
         </ul>
     </nav>
 {% endblock %}
