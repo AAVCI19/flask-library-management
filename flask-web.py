@@ -36,14 +36,21 @@ class SearchForm(Form):
 def search_page():
     cursor = mysql.cursor()
     form = SearchForm(request.form)
-    print(form.validate())
-    print(form.book_title)
+    
     if request.method == 'POST' and form.validate():
         name = form.book_title.data
-        query = "SELECT * FROM books WHERE books.book_title Like %s OR books.ISBN LIKE %s"
-        cursor.execute(query, ('%' + name + '%', '%' + name + '%'))
+        search_option = request.form.get('search_option')
+        if search_option == 'title':
+            query = "SELECT * FROM books WHERE books.book_title LIKE %s"
+        elif search_option == 'isbn':
+            query = "SELECT * FROM books WHERE books.ISBN LIKE %s"
+        else:
+            query = "SELECT * FROM books WHERE books.book_title LIKE %s"
+
+        cursor.execute(query, ('%' + name + '%',))
         data = cursor.fetchall()
         return render_template("book-search.html", data=data)
+
     return render_template("book-search.html")
 
 def add_book():

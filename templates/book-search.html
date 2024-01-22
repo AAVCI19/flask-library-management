@@ -76,19 +76,28 @@
         td:last-child {
             border-right: none;
         }
+        .search-option {
+            margin-right: 10px;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div id="search-container">
-        <div id="search-header">Search for Books</div>
-        <form name="BookSearch" method="POST">
-            <input type="text" id="search-input" name="book_title" placeholder="Type to search books">
-            <button id="search-button" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-    </div>
+<div id="search-container">
+    <div id="search-header">Search for Books</div>
+    <form name="BookSearch" method="POST">
+        <input type="radio" id="search-by-title" name="search_option" value="title" class="search-option" checked>
+        <label for="search-by-title">Search by Title</label>
+        <input type="radio" id="search-by-isbn" name="search_option" value="isbn" class="search-option">
+        <label for="search-by-isbn">Search by ISBN</label>
+        <br>
+        <br>
+        <input type="text" id="search-input" name="book_title" placeholder="Type to search books">
+        <button id="search-button" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
 
     <table>
         <thead>
