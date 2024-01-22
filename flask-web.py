@@ -110,6 +110,7 @@ class EditUserForm(Form):
     age = StringField('Age', [validators.Length(min=1, max=200)])
 
 
+
 @app.route("/edit-user", methods=['GET', 'POST'])
 def edit_user():
     cursor = mysql.cursor()
@@ -118,35 +119,29 @@ def edit_user():
     error_message = None  # Initialize error_message as None
 
     if request.method == 'POST' and form.validate():
-        newuserName = form.userName.data
-        cursor.execute("SELECT * FROM users WHERE user_name = %s", (newuserName,))
+        newUserName = form.userName.data
+        cursor.execute("SELECT * FROM users WHERE user_name = %s", (newUserName,))
         user = cursor.fetchone()  # Fetch user data
 
         if user:
-            user_password = form.userPassword.data
-            address = form.address.data
-            age = form.age.data
+            newuserPassword = form.userPassword.data
+            newAddress = form.address.data
+            newAge = form.age.data
 
-            cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s", (user_password, address, age, newuserName))
+            cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s", (newuserPassword, newAddress, newAge, newUserName))
             mysql.commit()
-            print("User updated successfully!")
             return redirect(url_for('home_page'))
         else:
             # If user not found, show an error message
-            error_message = f"User with name {newuserName} not found."
+            error_message = f"User with name {newUserName} not found."
 
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
-
-
-
 
 
 def issue_book():
     pass
 def return_book():
     pass
-
-    
 
 
 
