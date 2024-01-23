@@ -519,6 +519,21 @@ def show_most_active_users():
     data = cursor.fetchall()
     return render_template("most-active-users.html", data = data)
 
+@app.route('/people-have-overdue', methods = ["GET"])
+def people_have_overdue():
+    query = '''
+        SELECT users.user_id, users.user_name, COUNT(*) AS overdue_books_count
+        FROM users JOIN borrows ON users.user_id = borrows.user_id
+        WHERE borrows.return_date IS NULL OR borrows.return_date > borrows.actual_return_date
+        GROUP BY users.user_id, users.user_name
+        ORDER BY overdue_books_count DESC
+        LIMIT 10;
+    '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("people-have-overdue.html", data = data)
+
 if __name__ == "__main__":
     app.run(debug=True)
     show_borrowing_records()
