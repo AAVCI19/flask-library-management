@@ -1,7 +1,7 @@
 from flask import Flask, flash, render_template, request, redirect, url_for
 import mysql.connector
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
-
+from datetime import date 
 
 
 app = Flask(__name__)
@@ -116,27 +116,72 @@ def most_popular_author_list():
     return render_template("show-popular-authors.html", data = data)
 
 class IssueBookForm(Form):
-    book_title = StringField('book_title', [validators.Length(min=1, max=500)])
     username = StringField('Username', [validators.Length(min=1, max=50), validators.DataRequired()])
     password = PasswordField('Password', [validators.Length(min=6, max=50), validators.DataRequired()])
 
 @app.route("/issue-book", methods=['GET', 'POST'])
 def issue_book():
-    cursor = mysql.cursor()
     form = IssueBookForm(request.form)
     book_title = request.args.get('book_title', '')
     selected_book = {}
+    no_of_copies = 0
+    isbn = ""
+    user_id = 0
+    borrow_date = date.today()
     if book_title:
+        cursor = mysql.cursor()
         cursor.execute("SELECT * FROM books WHERE book_title LIKE %s", ('%' + book_title + '%',))
         data = cursor.fetchall()
         if data:
             selected_book = data[0]
+            no_of_copies = selected_book[4]
+            isbn = selected_book[0]
+
+    print(f"number of copies {no_of_copies}")    
+    print(f"isbn {isbn}")    
+
     if request.method == 'POST' and form.validate():
+        print("validate ediyor")
+        username = form.username.data
+        password = form.password.data
+        cursor1 = mysql.cursor()
+        cursor1.execute("Select user_id From users where user_name = %s and user_password = %s", (username, password))
+        data = cursor1.fetchall()
+        if data:
+            user_id = data[0][0]
+        
+        if(no_of_copies > 0):
+            print(f"number of copies {no_of_copies}")    
+            print("yes stock")
+            cursor2 = mysql.cursor()
+            query = '''
+                    Select borrow_id from borrows
+                    '''
+            cursor2.execute(query)
+            data = cursor2.fetchall()
+            print(data)
+            borrow_id = max(data, key=lambda x: x[0])
+            borrow_id_int = borrow_id[0] + 1
+            cursor3 = mysql.cursor()
+            query = '''
+                    INSERT INTO borrows (borrow_id, user_id, ISBN, borrow_date) VALUES (%s, %s, %s, %s)
+                    '''
+            cursor3.execute(query, (borrow_id_int,user_id, isbn, borrow_date))
+
+            cursor4 = mysql.cursor()
+            query = '''
+                    Update books
+                    Set books.no_of_copies = books.no_of_copies  - 1
+                    Where ISBN = %s
+                    '''
+            cursor4.execute(query, (isbn,))
+            mysql.commit()
+
         flash('Book issued', 'success')
         return redirect(url_for('home_page'))
+    
     print("Selected Book:", selected_book)
     return render_template("issue-book.html", form=form, selected_book=selected_book)
-
 
 
 def return_book():

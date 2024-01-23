@@ -62,7 +62,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Issue Book</h2>
+    <h2>Borrow Book</h2>
     <form name="IssueBookForm" method="POST">
         {{ form.csrf_token }}
 
@@ -74,6 +74,6 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <button type="submit">Issue Book</button>
+        <button type="submit">Borrow Book</button>
     </form>
 {% endblock %}
