@@ -112,21 +112,31 @@
         </thead>
         <tbody>
             {% for book in data %}
-                <tr>
-                    <td>{{ book[0] }}</td>
-                    <td>{{ book[1] }}</td>
-                    <td>{{ book[2] }}</td>
-                    <td>{{ book[3] }}</td>
-                    <td>{{ book[4] }}</td>
-                    <td>
-                        {% if book[5] %}
-                            <img src="{{ book[5] }}" alt="Book Image" style="max-width: 100px; max-height: 100px;">
-                        {% else %}
-                            Image source deleted
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+            <tr class="book-row" data-href="{{ url_for('issue_book', book_title=book[1]) }}">
+                <td>{{ book[0] }}</td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>{{ book[3] }}</td>
+                <td>{{ book[4] }}</td>
+                <td>
+                    {% if book[5] %}
+                        <img src="{{ book[5] }}" alt="Book Image" style="max-width: 100px; max-height: 100px;">
+                    {% else %}
+                        Image not available
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
+    <script>
+        document.querySelectorAll('.book-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const href = row.getAttribute('data-href');
+                if (href) {
+                    window.location.href = href;
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -115,22 +115,27 @@ def most_popular_author_list():
     data = cursor.fetchall()
     return render_template("show-popular-authors.html", data = data)
 
-class IssueBookForm():
-    book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
+class IssueBookForm(Form):
+    book_title = StringField('book_title', [validators.Length(min=1, max=500)])
+    username = StringField('Username', [validators.Length(min=1, max=50), validators.DataRequired()])
+    password = PasswordField('Password', [validators.Length(min=6, max=50), validators.DataRequired()])
 
+@app.route("/issue-book", methods=['GET', 'POST'])
 def issue_book():
     cursor = mysql.cursor()
     form = IssueBookForm(request.form)
-    if request.method == 'POST' and form.validate():
-        name = form.book_title.data
-        query = "SELECT * FROM books WHERE books.book_title Like %s"
-        cursor.execute(query, ('%' + name + '%',))
+    book_title = request.args.get('book_title', '')
+    selected_book = {}
+    if book_title:
+        cursor.execute("SELECT * FROM books WHERE book_title LIKE %s", ('%' + book_title + '%',))
         data = cursor.fetchall()
-        if not data:
-            flash('No books found with the given search criteria.', 'error')
-            return render_template("book-search.html", form=form)
-        return render_template("show-books.html", data=data)
-    return render_template("book-search.html", form = form)
+        if data:
+            selected_book = data[0]
+    if request.method == 'POST' and form.validate():
+        flash('Book issued', 'success')
+        return redirect(url_for('home_page'))
+    print("Selected Book:", selected_book)
+    return render_template("issue-book.html", form=form, selected_book=selected_book)
 
 
 
