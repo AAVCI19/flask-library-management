@@ -560,7 +560,7 @@ def show_most_popular_authors_by_age():
             return render_template("most-popular-authors-by-age.html", form = form)
         return render_template("most-popular-authors-by-age.html", data = data, form = form)
 
-    flash(f"Entered age is not between 1 and 100", 'error')
+    flash(f"Entered age should be between 1 and 100", 'error')
     return render_template("most-popular-authors-by-age.html", form = form)
 
 
