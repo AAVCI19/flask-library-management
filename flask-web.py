@@ -527,12 +527,43 @@ def people_have_overdue():
         WHERE borrows.return_date IS NULL OR borrows.return_date > borrows.actual_return_date
         GROUP BY users.user_id, users.user_name
         ORDER BY overdue_books_count DESC
-        LIMIT 10;
     '''
     cursor = mysql.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
     return render_template("people-have-overdue.html", data = data)
+
+class PopularAuthorByAge(Form):
+        age = IntegerField('Age', [
+        validators.NumberRange(min=0, max=100, message='Please enter a valid age between 1 and 100.')
+    ])
+
+@app.route('/most-popular-authors-by-age', methods = ["POST", "GET"])
+def show_most_popular_authors_by_age():
+    form = PopularAuthorByAge(request.form)
+    if request.method == 'POST' and form.validate():
+        query = '''
+        Select users.age, count(*) as most_read_author, authors.name_surname 
+        from borrows, users, books, writtenby, authors
+        where borrows.ISBN = books.ISBN and books.ISBN = writtenby.ISBN and 
+        writtenby.author_id = authors.author_id and borrows.user_id = users.user_id and users.age = %s
+        group by authors.name_surname, users.age
+        order by count(*) DESC
+        Limit 10;
+        '''
+        age = form.age.data
+        cursor = mysql.cursor()
+        cursor.execute(query, (age,))
+        data = cursor.fetchall()
+        if not data:
+            flash(f"No author data for age {age}", 'error')
+            return render_template("most-popular-authors-by-age.html", form = form)
+        return render_template("most-popular-authors-by-age.html", data = data, form = form)
+
+    flash(f"Entered age is not between 1 and 100", 'error')
+    return render_template("most-popular-authors-by-age.html", form = form)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

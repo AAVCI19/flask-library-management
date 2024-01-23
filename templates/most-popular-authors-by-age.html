@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Most Popular Authors by Age</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e7e1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            margin-right: 200px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #f05a26;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #f2421b;
+        }
+
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #03a678;
+            color: #fff;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Most Popular Authors by Age</h1>
+
+    <form method="POST" action="">
+        <label for="age">Enter Age:</label>
+        <input type="number" id="age" name="age" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if data %}
+        <h2>Results for Age {{ form.age.data }}:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Author Name</th>
+                    <th>Number of Readers</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in data %}
+                    <tr>
+                        <td>{{ record[2] }}</td>
+                        <td>{{ record[1] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% for message in get_flashed_messages() %}
+        <p style="color: red; text-align:center;">{{ message }}</p>
+    {% endfor %}
+{% endblock %}
