@@ -65,6 +65,7 @@ def edit_book():
 class BorrowForm(Form):
     user_name = StringField('user_name', [validators.Length(min = 1, max = 500)])
 
+@app.route('/show-borrowing-records', methods = ["GET", "POST"])
 @app.route('/search-borrowing', methods = ["GET", "POST"])
 def show_borrowing_records():
     cursor = mysql.cursor()
@@ -81,7 +82,7 @@ def show_borrowing_records():
         if not data:
             flash(f"No borrowing records for {user_name}, Search for another user", 'error')
             return render_template("search-borrowing.html", form = form)
-        return render_template("show-borrowing-records.html", data=data)
+        return render_template("search-borrowing.html", data=data)
     return render_template("search-borrowing.html", form = form)
     
 @app.route('/show-popular-books', methods = ["GET"])

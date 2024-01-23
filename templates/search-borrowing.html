@@ -10,12 +10,118 @@
       </ul>
     {% endif %}
   {% endwith %}
-  <title>Search Borrow Page</title>
+  <title>Borrowings List Page</title>
+  <style>
+    body {
+      background-color: #f3e7e1;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #search-container {
+      text-align: center;
+      margin: 20px;
+    }
+
+    #search-header {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    form {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .search-option {
+      margin-right: 10px;
+    }
+
+    #search-input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border-radius: 25px;
+      border: 1px solid #333;
+    }
+
+    #search-button {
+      padding: 10px 20px;
+      background-color: #f05a26;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #search-button:hover {
+      background-color: #f2421b;
+    }
+
+    table {
+      width: 70%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #03a678;
+      color: #fff;
+    }
+
+    tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    td:last-child {
+      border-right: none;
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
-  <form name="BorrowSearch" method="POST">
-    <input autofocus="autofocus" name="user_name" id="user_name" maxlength="150">
-    <input type="submit" name="Submit" value="Search">
-  </form>
+  <div id="search-container">
+    <div id="search-header">Enter your username to see your borrowing information.</div>
+    <form name="BorrowSearch" method="POST">
+      <input type="text" id="search-input" name="user_name" placeholder="Type to search borrowings">
+      <button id="search-button" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Borrow Id</th>
+        <th>User Name</th>
+        <th>ISBN Number</th>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for borrowings in data %}
+        <tr>
+          <td>{{ borrowings[0] }}</td>
+          <td>{{ borrowings[1] }}</td>
+          <td>{{ borrowings[2] }}</td>
+          <td>{{ borrowings[3] }}</td>
+          <td>{{ borrowings[4] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
