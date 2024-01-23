@@ -245,6 +245,21 @@ def edit_user():
 def analytics():
     return render_template("analytics.html")
 
+@app.route('/show-not-all-borrowed-books', methods = ["GET"]) 
+def show_not_all_borrowed_books():
+    query = '''
+        Select books.book_title, books.ISBN, books.publisher, books.year_of_publication,
+        books.image_URL_M, books.no_of_copies - count(borrows.ISBN) as available_copies
+        From books 
+        Left Join borrows on books.ISBN = borrows.ISBN
+        Group By books.ISBN
+        Having available_copies > 0 OR available_copies is null;
+    '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("show-not-all-borrowed-books.html", data = data)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
