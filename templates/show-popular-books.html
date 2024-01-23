@@ -1,0 +1,31 @@
+{% block head %}
+<title>Show Popular Books </title>
+{% endblock %}
+{% block body %}
+<table>
+    <thead>
+        <tr>
+            <th>Book Name</th>
+            <th>ISBN Number</th>
+            <th>Author Name</th>
+            <th>Publisher</th>
+            <th>Publishing Year</th>
+            <th>Image URL</th>
+            <th> Read Count </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in data %}
+        <tr>
+            <td>{{ book[0] }}</td>
+            <td>{{ book[1] }}</td>
+            <td>{{ book[2] }}</td>
+            <td>{{ book[3] }}</td>
+            <td>{{ book[4] }}</td>
+            <td>{{ book[5] }}</td>
+            <td>{{ book[6] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

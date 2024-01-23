@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <title>Search Borrow Page</title>
+{% endblock %}
+
+{% block body %}
+  <form name="BorrowSearch" method="POST">
+    <input autofocus="autofocus" name="user_name" id="user_name" maxlength="150">
+    <input type="submit" name="Submit" value="Search">
+  </form>
+{% endblock %}
