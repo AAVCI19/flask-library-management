@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Add Book</title>
+    <style>
+        body {
+            background-color: #f3e7e1; 
+            font-family: 'Arial', sans-serif; 
+        }
+
+        form {
+            max-width: 400px;
+            margin: 40px auto 20px; 
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h2>Add Book</h2>
+    <p>Enter the necessary information to add a book:</p>
+    <form name="add-book" method="POST">
+        {{ form.csrf_token }}
+
+        <label for="isbn">ISBN(Necessary to Enter):</label>
+        {{ form.isbn }}
+        <br>
+        <label for="book_title">Book Title(Necessary to Enter):</label>
+        {{ form.book_title }}
+        <br>
+        <label for="year_of_publication">Publishing Year:</label>
+        {{ form.year_of_publication }}
+        <br>
+        <label for="publisher">Publisher:</label>
+        {{ form.publisher }}
+        <br>
+        <label for="no_of_copies">Number of Copies(Necessary to Enter):</label>
+        {{ form.no_of_copies }}
+        <br>
+        <label for="image_URL_S">Image URL Small:</label>
+        {{ form.image_URL_S }}
+        <br>
+        <label for="image_URL_M">Image URL Medium:</label>
+        {{ form.image_URL_M }}
+        <br>
+        <label for="image_URL_L">Image URL Large:</label>
+        {{ form.image_URL_L }}
+        <br>
+        <input type="submit" value="Edit Book">
+    </form>
+{% endblock %}
