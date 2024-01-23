@@ -76,4 +76,7 @@
 
         <button type="submit">Borrow Book</button>
     </form>
+    {% for message in get_flashed_messages() %}
+    <p style="color: green; text-align:center;">{{ message }}</p>
+    {% endfor %}
 {% endblock %}

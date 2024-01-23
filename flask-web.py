@@ -138,11 +138,8 @@ def issue_book():
             no_of_copies = selected_book[4]
             isbn = selected_book[0]
 
-    print(f"number of copies {no_of_copies}")    
-    print(f"isbn {isbn}")    
-
     if request.method == 'POST' and form.validate():
-        print("validate ediyor")
+
         username = form.username.data
         password = form.password.data
         cursor1 = mysql.cursor()
@@ -152,15 +149,12 @@ def issue_book():
             user_id = data[0][0]
         
         if(no_of_copies > 0):
-            print(f"number of copies {no_of_copies}")    
-            print("yes stock")
             cursor2 = mysql.cursor()
             query = '''
                     Select borrow_id from borrows
                     '''
             cursor2.execute(query)
             data = cursor2.fetchall()
-            print(data)
             borrow_id = max(data, key=lambda x: x[0])
             borrow_id_int = borrow_id[0] + 1
             cursor3 = mysql.cursor()
@@ -183,8 +177,7 @@ def issue_book():
 
         flash('Book issued', 'success')
         return redirect(url_for('home_page'))
-    
-    print("Selected Book:", selected_book)
+
     return render_template("issue-book.html", form=form, selected_book=selected_book)
 
 
@@ -195,9 +188,7 @@ class ReturnBookForm(Form):
 @app.route("/return-book", methods=['GET', 'POST'])
 def return_book():
     form = ReturnBookForm(request.form)
-    print("hello")
     if request.method == 'POST' and form.validate():
-        print("hello")
         isbn = form.isbn.data
         cursor1 = mysql.cursor()
         return_date = date.today()
@@ -215,7 +206,6 @@ def return_book():
         '''
         cursor2.execute(query, (isbn,))
         mysql.commit()
-        print("succesfully returned book")
         flash('Book successfully returned', 'success')
         return redirect(url_for('home_page'))
     
@@ -343,8 +333,6 @@ def edit_user():
                 cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s",
                                (new_user_password, new_address, new_age, userName))
                 mysql.commit()
-
-                print("User Updated Successfully")
                 return redirect(url_for('home_page'))
             else:
                 # If the user is not found, set an error message
@@ -401,7 +389,6 @@ def remove_book():
         delete_query = "DELETE FROM books WHERE ISBN = %s"
         cursor.execute(delete_query, [form.isbn.data])
         mysql.commit()
-        print("Book Removed successfully")
 
         return redirect(url_for('home_page'))
 
@@ -457,16 +444,12 @@ def add_book():
         cursor2.execute(insert_query, values) 
         mysql.commit()
 
-        
-
-        # Flash Success Message
-        print("New Book Added", "success")
 
         # Redirect to show all books
         return redirect(url_for('home_page'))
 
     # To handle GET request to route
-    print("HATAasjklkasjkja")
+
     return render_template('add-book.html', form=form)
 
 @app.route('/edit-book', methods=['GET', 'POST'])
@@ -499,7 +482,6 @@ def edit_book():
         cursor2 = mysql.cursor()
         cursor2.execute(update_query, values)
         mysql.commit()
-        print("Book Updated successfully")
 
         return redirect(url_for('home_page'))
 
