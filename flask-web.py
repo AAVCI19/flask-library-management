@@ -30,6 +30,7 @@ def home_page():
 class SearchForm(Form):
     book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
     
+
 @app.route("/search-book", methods = ['GET', 'POST'])
 def search_page():
     cursor = mysql.cursor()
@@ -98,7 +99,44 @@ def most_popular_books_list():
     cursor.execute(query)
     data = cursor.fetchall()
     return render_template("show-popular-books.html", data = data)
-   
+
+@app.route('/show-popular-authors', methods = ["GET"]) 
+def most_popular_author_list():
+    query = '''
+        Select authors.name_surname, count(*) as total_count
+        From borrows, authors, writtenby
+        Where borrows.ISBN = writtenby.ISBN and writtenby.author_id = authors.author_id
+        Group by authors.name_surname
+        Order by total_count DESC
+        Limit 10;
+    '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("show-popular-authors.html", data = data)
+
+class IssueBookForm():
+    book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
+
+def issue_book():
+    cursor = mysql.cursor()
+    form = IssueBookForm(request.form)
+    if request.method == 'POST' and form.validate():
+        name = form.book_title.data
+        query = "SELECT * FROM books WHERE books.book_title Like %s"
+        cursor.execute(query, ('%' + name + '%',))
+        data = cursor.fetchall()
+        if not data:
+            flash('No books found with the given search criteria.', 'error')
+            return render_template("book-search.html", form=form)
+        return render_template("show-books.html", data=data)
+    return render_template("book-search.html", form = form)
+
+
+
+def return_book():
+    pass
+
 
 
 
@@ -198,20 +236,7 @@ def edit_user():
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
 
-"""
 
-def add_user():
-    pass
-def remove_user():
-    pass
-def edit_user():
-    pass
-"""
-
-def issue_book():
-    pass
-def return_book():
-    pass
 
 
 
