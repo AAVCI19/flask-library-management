@@ -55,89 +55,118 @@ def edit_book():
 
 
 
-
-
+# Define form for adding a user
 class AddUserForm(Form):
     userName = StringField('userName', [validators.Length(min=1, max=100)])
     userPassword = StringField('userPassword', [validators.Length(min=1, max=100)])
     address = StringField('Address', [validators.Length(min=1, max=100)])
     age = StringField('Age', [validators.Length(min=1, max=200)])
 
-
+# Define route for adding a user
 @app.route("/add-user", methods=['GET', 'POST'])
 def add_user():
-    cursor = mysql.cursor()
-    form = AddUserForm(request.form)
+    try:
+        # Attempt to create a cursor for database operations and an instance of AddUserForm
+        cursor = mysql.cursor()
+        form = AddUserForm(request.form)
 
-    if request.method == 'POST' and form.validate():
-        userName = form.userName.data
-        userPassword = form.userPassword.data
-        address = form.address.data
-        age = form.age.data
+        if request.method == 'POST' and form.validate():
+            # Retrieve user data from the form
+            userName = form.userName.data
+            userPassword = form.userPassword.data
+            address = form.address.data
+            age = form.age.data
 
-        query = "INSERT INTO users (user_name, user_password, address, age) VALUES (%s,%s, %s, %s)"
-        cursor.execute(query, (userName, userPassword, address, age))  
-        mysql.commit()
+            # Execute an SQL query to insert user data into the database
+            query = "INSERT INTO users (user_name, user_password, address, age) VALUES (%s,%s, %s, %s)"
+            cursor.execute(query, (userName, userPassword, address, age))
+            mysql.commit()
 
-        return redirect(url_for('home_page'))
+            return redirect(url_for('home_page'))
+    except Exception as e:
+        return render_template("error.html", error_message=str(e))
+    finally:
+        cursor.close()
+
+    # Render the add-user.html template with the form
     return render_template("add-user.html", form=form)
 
 
-
-
-
+# Define form for removing a user
 class RemoveUserForm(Form):
     userName = StringField('userName', [validators.Length(min=1, max=100)])
 
-
+# Define route for removing a user
 @app.route("/remove-user", methods=['GET', 'POST'])
 def remove_user():
-    form = RemoveUserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        cursor = mysql.cursor()
-        userName = form.userName.data
-        cursor.execute("DELETE FROM users WHERE user_name = %s", (userName,))
-        mysql.commit()
-        return redirect(url_for('home_page'))
+    # Initialize cursor variable outside the try block
+    cursor = None
+    try:
+        # Attempt to create an instance of RemoveUserForm
+        form = RemoveUserForm(request.form)
+        
+        if request.method == 'POST' and form.validate():
+            cursor = mysql.cursor()
+            # Retrieve user name from the form and delete the corresponding user from the database
+            userName = form.userName.data
+            cursor.execute("DELETE FROM users WHERE user_name = %s", (userName,))
+            mysql.commit()
+
+            # Redirect user to the home page
+            return redirect(url_for('home_page'))
+    except Exception as e:
+        return render_template("error.html", error_message=str(e))
+    finally:
+        if cursor:
+            cursor.close()
+
     return render_template("remove-user.html", form=form)
 
-
-
+# Define form for editing a user
 class EditUserForm(Form):
     userName = StringField('userName', [validators.Length(min=1, max=100)])
     userPassword = StringField('userPassword', [validators.Length(min=1, max=100)])
     address = StringField('Address', [validators.Length(min=1, max=100)])
     age = StringField('Age', [validators.Length(min=1, max=200)])
 
-
+# Define route for editing a user
 @app.route("/edit-user", methods=['GET', 'POST'])
 def edit_user():
-    form = EditUserForm(request.form)
-    user = None  # Initialize user as None
-    error_message = None  # Initialize error_message as None
+    # Initialize cursor variable outside the try block
+    cursor = None
+    try:
+        # Attempt to create an instance of EditUserForm and initialize variables
+        form = EditUserForm(request.form)
+        user = None
+        error_message = None
 
-    if request.method == 'POST' and form.validate():
-        # Correct the field names here
-        cursor = mysql.cursor()
-        userName = form.userName.data
+        if request.method == 'POST' and form.validate():
+            cursor = mysql.cursor()
+            # Retrieve user name from the form and query the database to fetch user data
+            userName = form.userName.data
+            cursor.execute("SELECT * FROM users WHERE user_name = %s", (userName,))
+            user = cursor.fetchone()
 
-        cursor.execute("SELECT * FROM users WHERE user_name = %s", (userName,))
-        user = cursor.fetchone()  # Fetch user data
+            # If the user is found, update the user's password, address, and age in the database
+            if user:
+                new_user_password = form.userPassword.data
+                new_address = form.address.data
+                new_age = form.age.data
 
-        if user:
-            # If user found, update user data
-            new_user_password = form.userPassword.data
-            new_address = form.address.data
-            new_age = form.age.data
+                cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s",
+                               (new_user_password, new_address, new_age, userName))
+                mysql.commit()
 
-            cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s", (new_user_password, new_address, new_age, userName))
-            mysql.commit()
-
-            print("User Updated Successfully")
-            return redirect(url_for('home_page'))
-        else:
-            # If user not found, show an error message
-            error_message = f"User with name {userName} not found."
+                print("User Updated Successfully")
+                return redirect(url_for('home_page'))
+            else:
+                # If the user is not found, set an error message
+                error_message = f"User with name {userName} not found."
+    except Exception as e:
+        return render_template("error.html", error_message=str(e))
+    finally:
+        if cursor:
+            cursor.close()
 
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
