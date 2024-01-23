@@ -110,30 +110,34 @@ class EditUserForm(Form):
     age = StringField('Age', [validators.Length(min=1, max=200)])
 
 
-
 @app.route("/edit-user", methods=['GET', 'POST'])
 def edit_user():
-    cursor = mysql.cursor()
     form = EditUserForm(request.form)
     user = None  # Initialize user as None
     error_message = None  # Initialize error_message as None
 
     if request.method == 'POST' and form.validate():
-        newUserName = form.userName.data
-        cursor.execute("SELECT * FROM users WHERE user_name = %s", (newUserName,))
+        # Correct the field names here
+        cursor = mysql.cursor()
+        userName = form.userName.data
+
+        cursor.execute("SELECT * FROM users WHERE user_name = %s", (userName,))
         user = cursor.fetchone()  # Fetch user data
 
         if user:
-            newuserPassword = form.userPassword.data
-            newAddress = form.address.data
-            newAge = form.age.data
+            # If user found, update user data
+            new_user_password = form.userPassword.data
+            new_address = form.address.data
+            new_age = form.age.data
 
-            cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s", (newuserPassword, newAddress, newAge, newUserName))
+            cursor.execute("UPDATE users SET user_password = %s, address = %s, age = %s WHERE user_name = %s", (new_user_password, new_address, new_age, userName))
             mysql.commit()
+
+            print("User Updated Successfully")
             return redirect(url_for('home_page'))
         else:
             # If user not found, show an error message
-            error_message = f"User with name {newUserName} not found."
+            error_message = f"User with name {userName} not found."
 
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
@@ -144,10 +148,11 @@ class AddAuthorForm(Form):
 
 @app.route("/add-author", methods=['GET', 'POST'])
 def add_author():
-    cursor = mysql.cursor()
     form = AddAuthorForm(request.form)
 
     if request.method == 'POST' and form.validate():
+        cursor = mysql.cursor()
+
         authorName = form.authorName.data
 
         # Find the maximum author_id and increment it
@@ -162,6 +167,8 @@ def add_author():
         return redirect(url_for('home_page'))
 
     return render_template("add-author.html", form=form)
+
+
 
 class RemoveAuthorForm(Form):
     authorName = StringField('authorName', [validators.Length(min=1, max=200)])
