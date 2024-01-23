@@ -222,16 +222,12 @@ def return_book():
     return render_template("return-book.html")
 
 class AddUserForm(Form):
-    """username = StringField('Username', [validators.Length(min=1, max=50)])
-    password = PasswordField('Password', [validators.Length(min=6, max=50)])
-    """
-    id = StringField('User ID', [validators.Length(min=1, max=100000)])
-
+    userName = StringField('userName', [validators.Length(min=1, max=100)])
+    userPassword = StringField('userPassword', [validators.Length(min=1, max=100)])
     address = StringField('Address', [validators.Length(min=1, max=100)])
-    age = StringField('Age', [validators.Optional(), validators.Regexp('^\d+$', message='Age must be a number')])
-   
+    age = StringField('Age', [validators.Length(min=1, max=200)])
 
-
+# Define route for adding a user
 @app.route("/add-user", methods=['GET', 'POST'])
 def add_user():
     try:
@@ -260,9 +256,8 @@ def add_user():
     # Render the add-user.html template with the form
     return render_template("add-user.html", form=form)
 
-
 class RemoveUserForm(Form):
-    id = StringField('User ID', [validators.Length(min=1, max=100000)])
+    userName = StringField('userName', [validators.Length(min=1, max=100)])
 
 
 @app.route("/remove-user", methods=['GET', 'POST'])
@@ -316,10 +311,12 @@ def edit_user(username):
 """
 
 class EditUserForm(Form):
-    user_id = StringField('User ID', [validators.Length(min=1, max=100000)])
+    userName = StringField('userName', [validators.Length(min=1, max=100)])
+    userPassword = StringField('userPassword', [validators.Length(min=1, max=100)])
     address = StringField('Address', [validators.Length(min=1, max=100)])
-    age = StringField('Age', [validators.Optional(), validators.Regexp('^\d+$', message='Age must be a number')])
+    age = StringField('Age', [validators.Length(min=1, max=200)])
 
+# Define route for editing a user
 @app.route("/edit-user", methods=['GET', 'POST'])
 def edit_user():
     # Initialize cursor variable outside the try block
