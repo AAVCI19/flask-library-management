@@ -61,18 +61,12 @@
     <p>Enter the necessary information to add a user:</p>
     <form name="add-user" method="POST">
         {{ form.csrf_token }}
-    
-        <!-- 
-        <label for="username">Username:</label>
-        {{ form.username }}
+        <label for="userName">Username:</label>
+        {{ form.userName }}
         <br>
-        <label for="password">Password:</label>
-        {{ form.password }}
-        <br>
-        -->
-        <label for="id">ID:</label>
-        {{ form.id }}
-        <br>
+        <label for="userPassword">Password:</label>
+        {{ form.userPassword }}
+        <br>  
         <label for="address">Address:</label>
         {{ form.address }}
         <br>
