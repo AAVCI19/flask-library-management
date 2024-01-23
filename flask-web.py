@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 import mysql.connector
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 
@@ -6,9 +6,10 @@ from wtforms import Form, BooleanField, StringField, PasswordField, validators
 
 app = Flask(__name__)
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'library'
 app.config['MYSQL_HOST'] = 'localhost'
+app.secret_key = "flaskproje123*"
 
 mysql = mysql.connector.connect(
     user=app.config['MYSQL_USER'],
@@ -28,10 +29,7 @@ def home_page():
 
 class SearchForm(Form):
     book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
-
-
-
-
+    
 @app.route("/search-book", methods = ['GET', 'POST'])
 def search_page():
     cursor = mysql.cursor()
@@ -60,6 +58,47 @@ def remove_book():
 def edit_book():
     pass
 
+
+
+
+class BorrowForm(Form):
+    user_name = StringField('user_name', [validators.Length(min = 1, max = 500)])
+
+@app.route('/search-borrowing', methods = ["GET", "POST"])
+def show_borrowing_records():
+    cursor = mysql.cursor()
+    form = BorrowForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user_name = form.user_name.data
+        query = '''
+        Select borrow_id, users.user_name, borrows.ISBN, borrow_date, return_date 
+        from borrows, users, books 
+        where borrows.ISBN = Books.ISBN and borrows.user_id = users.user_id and users.user_name = %s;
+        '''
+        cursor.execute(query, (user_name,))
+        data = cursor.fetchall()
+        if not data:
+            flash(f"No borrowing records for {user_name}, Search for another user", 'error')
+            return render_template("search-borrowing.html", form = form)
+        return render_template("show-borrowing-records.html", data=data)
+    return render_template("search-borrowing.html", form = form)
+    
+@app.route('/show-popular-books', methods = ["GET"])
+def most_popular_books_list():
+    query = '''
+        Select books.book_title, books.ISBN,authors.name_surname, books.publisher, books.year_of_publication,
+        books.image_URL_M, count(*) as total_count
+        From books, borrows, authors, writtenby
+        Where books.ISBN = borrows.ISBN and books.ISBN = writtenby.ISBN and writtenby.author_id = authors.author_id
+        Group By books.ISBN, authors.name_surname
+        Order By total_count DESC
+        Limit 10;
+        '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("show-popular-books.html", data = data)
+   
 
 
 
@@ -174,9 +213,10 @@ def issue_book():
 def return_book():
     pass
 
-    
+
 
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+    show_borrowing_records()
