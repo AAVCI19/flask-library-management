@@ -112,6 +112,25 @@ def most_popular_author_list():
     data = cursor.fetchall()
     return render_template("show-popular-authors.html", data = data)
 
+
+@app.route('/show-not-all-borrowed-books', methods = ["GET"]) 
+def show_not_all_borrowed_books():
+    query = '''
+        Select books.book_title, books.ISBN, books.publisher, books.year_of_publication,
+        books.image_URL_M, books.no_of_copies - count(borrows.ISBN) as available_copies
+        From books 
+        Left Join borrows on books.ISBN = borrows.ISBN
+        Group By books.ISBN
+        Having available_copies > 0 OR available_copies is null;
+    '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("show-not-all-borrowed-books.html", data = data)
+
+
+
+
 class IssueBookForm():
     book_title = StringField('book_title', [validators.Length(min = 1, max = 500)])
 

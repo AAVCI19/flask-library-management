@@ -1,0 +1,29 @@
+{% block head %}
+    <title> Borrowings List Page </title>
+{% endblock %}
+{% block body %}
+    <table>
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>ISBN Number</th>
+                <th>Publisher</th>
+                <th>Publishing Year</th>
+                <th>Image URL</th>
+                <th>Available Number of Copies</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for borrowings in data %}
+                <tr>
+                    <td>{{ borrowings[0] }}</td>
+                    <td>{{ borrowings[1] }}</td>
+                    <td>{{ borrowings[2] }}</td>
+                    <td>{{ borrowings[3] }}</td>
+                    <td>{{ borrowings[4] }}</td>
+                    <td>{{ borrowings[5] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
