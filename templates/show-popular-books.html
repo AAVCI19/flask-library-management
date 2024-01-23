@@ -1,31 +1,85 @@
+{% extends 'base.html' %}
+
 {% block head %}
-<title>Show Popular Books </title>
+    <title>Recent Popular Books</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e7e1;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            color: #333;
+        }
+        table {
+            width: 85%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #03a678;
+            color: #fff;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
 {% endblock %}
+
 {% block body %}
-<table>
-    <thead>
-        <tr>
-            <th>Book Name</th>
-            <th>ISBN Number</th>
-            <th>Author Name</th>
-            <th>Publisher</th>
-            <th>Publishing Year</th>
-            <th>Image URL</th>
-            <th> Read Count </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for book in data %}
-        <tr>
-            <td>{{ book[0] }}</td>
-            <td>{{ book[1] }}</td>
-            <td>{{ book[2] }}</td>
-            <td>{{ book[3] }}</td>
-            <td>{{ book[4] }}</td>
-            <td>{{ book[5] }}</td>
-            <td>{{ book[6] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <h2>Recent Popular Books</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>ISBN Number</th>
+                <th>Author Name</th>
+                <th>Publisher</th>
+                <th>Publishing Year</th>
+                <th>Image URL</th>
+                <th>Read Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in data %}
+                <tr>
+                    <td>{{ book[0] }}</td>
+                    <td>{{ book[1] }}</td>
+                    <td>{{ book[2] }}</td>
+                    <td>{{ book[3] }}</td>
+                    <td>{{ book[4] }}</td>
+                    <td>
+                        {% if book[5] %}
+                            <img src="{{ book[5] }}" alt="Book Image">
+                        {% else %}
+                            Image not available
+                        {% endif %}
+                    </td>
+                    <td>{{ book[6] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

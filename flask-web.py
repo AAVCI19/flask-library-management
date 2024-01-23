@@ -241,10 +241,9 @@ def edit_user():
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
 
-
-
-
-
+@app.route("/analytics")
+def analytics():
+    return render_template("analytics.html")
 
 
 if __name__ == "__main__":

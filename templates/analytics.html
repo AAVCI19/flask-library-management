@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Analytics</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e7e1;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-wrapper {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .number {
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background-color: #f05a26;
+        }
+
+        a:hover {
+            background-color: #e04e23;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h2>Analytics Options</h2>
+    <div class="button-container">
+        <div class="button-wrapper">
+            <span class="number">1.</span>
+            <a href="/show-popular-authors">SHOW POPULAR AUTHORS</a>
+        </div>
+        <div class="button-wrapper">
+            <span class="number">2.</span>
+            <a href="/show-popular-books">SHOW POPULAR BOOKS</a>
+        </div>
+    </div>
+{% endblock %}
