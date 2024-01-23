@@ -52,12 +52,6 @@ def search_page():
 
     return render_template("book-search.html")
 
-def add_book():
-    pass
-def remove_book():
-    pass
-def edit_book():
-    pass
 
 
 
@@ -275,30 +269,6 @@ def remove_user():
 
     return render_template("remove-user.html", form=form)
 
-
-"""
-@app.route("/edit-user/<username>", methods=['GET', 'POST'])
-def edit_user(username):
-    form = AddUserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        new_id = form.id.data
-        new_address = form.address.data
-        new_age = form.age.data
-        # Example: cursor.execute("UPDATE users SET username = %s, password = %s WHERE username = %s", (new_username, new_password, username))
-        cursor.execute("UPDATE users SET user_id = %s, address = %s, age = %s WHERE id = %s", (new_id, new_address, new_age, id))
-        mysql.commit()
-        return redirect(url_for('home_page'))
-    # Fetch the existing user data and pre-fill the form fields
-    # Example: cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-    cursor.execute("SELECT * FROM users WHERE id = %s", (id))
-    # existing_user_data = cursor.fetchone()
-    existing_user_data = cursor.fetchone()
-    # form.username.data = existing_user_data['username']
-    form.id.data = existing_user_data['user_id']
-    # form.password.data = existing_user_data['password']
-    return render_template("edit-user.html", form=form)
-
-"""
 
 class EditUserForm(Form):
     userName = StringField('userName', [validators.Length(min=1, max=100)])
