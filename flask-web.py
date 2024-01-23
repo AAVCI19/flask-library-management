@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 import mysql.connector
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from wtforms import Form, BooleanField, IntegerField, StringField, PasswordField, validators
 
 
 
@@ -46,12 +46,134 @@ def search_page():
         return render_template("book-search.html", data=data)
     return render_template("book-search.html")
 
+class AddBook(Form):
+    isbn = StringField('ISBN', [validators.InputRequired()])
+    book_title = StringField('Book Title', [validators.InputRequired()])
+    year_of_publication = IntegerField('Publishing Year', default=0)
+    publisher = StringField('Publisher')
+    no_of_copies = IntegerField('Number of Copies', [validators.InputRequired()])
+    image_URL_S = StringField('Image URL Small')
+    image_URL_M = StringField('Image URL Medium')
+    image_URL_L = StringField('Image URL Large')
+
+
+
+@app.route('/add-book', methods=['GET', 'POST'])
 def add_book():
-    pass
+    # Get form data from request
+    form = AddBook(request.form)
+
+    # To handle POST request to route
+    if request.method == 'POST' :
+
+        # Create MySQLCursor
+        cursor = mysql.cursor()
+
+        # Check if book with same ID already exists
+        value = (form.isbn.data,)
+        result = cursor.execute(
+            "SELECT ISBN FROM books WHERE ISBN=%s", value)
+        book = cursor.fetchone()
+        if(book):
+            error = 'Book with that ID already exists'
+            return render_template('add-book.html', form=form, error=error)
+
+        # Execute SQL Query
+        insert_query = """INSERT INTO `books` (`ISBN`, `book_title`, `year_of_publication`, `publisher`, `no_of_copies`, `image_URL_S`, `image_URL_M`, `image_URL_L`) VALUES (
+                           %s,
+                           %s,
+                           %s,
+                           %s,
+                           %s,
+                           %s,
+                           %s,
+                           %s
+                      )"""
+
+
+        values = (form.isbn.data, form.book_title.data, form.year_of_publication.data, form.publisher.data, form.no_of_copies.data, form.image_URL_S.data, form.image_URL_M.data, form.image_URL_L.data)
+        # Commit to DB
+        cursor2 = mysql.cursor()
+        cursor2.execute(insert_query, values) 
+        mysql.commit()
+
+        
+
+        # Flash Success Message
+        print("New Book Added", "success")
+
+        # Redirect to show all books
+        return redirect(url_for('home_page'))
+
+    # To handle GET request to route
+    print("HATAasjklkasjkja")
+    return render_template('add-book.html', form=form)
+    
+class RemoveBook(Form):
+    isbn = StringField('ISBN', [validators.InputRequired()])
+    
+    
+
+
+@app.route('/remove-book', methods=['GET', 'POST'])
 def remove_book():
-    pass
+    form = RemoveBook(request.form)
+    cursor = mysql.cursor()
+
+    if request.method == 'POST' and form.validate():
+        result = cursor.execute("SELECT ISBN FROM books WHERE ISBN=%s", [form.isbn.data])
+        book = cursor.fetchone()
+
+        if not book:
+            error = 'Book with that ID does not exist'
+            return render_template('remove-book.html', form=form, error=error)
+
+        delete_query = "DELETE FROM books WHERE ISBN = %s"
+        cursor.execute(delete_query, [form.isbn.data])
+        mysql.commit()
+        print("Book Removed successfully")
+
+        return redirect(url_for('home_page'))
+
+    return render_template('remove-book.html', form=form)
+
+
+
+@app.route('/edit-book', methods=['GET', 'POST'])
 def edit_book():
-    pass
+    form = AddBook(request.form)
+    cursor1 = mysql.cursor()
+
+    # Fetch the book details from the database
+    result = cursor1.execute("SELECT * FROM books WHERE ISBN=%s", [form.isbn.data])
+    book = cursor1.fetchone()
+
+    if not book:
+        error = 'Book with that ID does not exist'
+        return render_template('edit-book.html', form=form, error=error)
+
+    if request.method == 'POST' and form.validate():
+        # Update the book details in the database
+        update_query = """UPDATE books SET
+                           book_title=%s,
+                           year_of_publication=%s,
+                           publisher=%s,
+                           no_of_copies=%s,
+                           image_URL_S=%s,
+                           image_URL_M=%s,
+                           image_URL_L=%s
+                           WHERE ISBN=%s"""
+        values = (form.book_title.data, form.year_of_publication.data, form.publisher.data,
+                  form.no_of_copies.data, form.image_URL_S.data, form.image_URL_M.data,
+                  form.image_URL_L.data,form.isbn.data)
+        cursor2 = mysql.cursor()
+        cursor2.execute(update_query, values)
+        mysql.commit()
+        print("Book Updated successfully")
+
+        return redirect(url_for('home_page'))
+
+    return render_template('edit-book.html', form=form)
 
 
 
@@ -81,7 +203,7 @@ def add_user():
         return redirect(url_for('home_page'))
     return render_template("add-user.html", form=form)
 
-
+# asskaskask
 class RemoveUserForm(Form):
     id = StringField('User ID', [validators.Length(min=1, max=100000)])
 

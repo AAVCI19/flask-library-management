@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Remove Book</title>
+    <style>
+        body {
+            background-color: #f4f4f4; 
+            font-family: 'Arial', sans-serif; 
+        }
+
+        form {
+            max-width: 400px;
+            margin: 40px auto 20px; 
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #e74c3c;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c0392b;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h2>Remove Book</h2>
+    <p>Enter the ISBN of the book you want to remove:</p>
+    <form name="remove-book" method="POST">
+        {{ form.csrf_token }}
+
+        <label for="isbn">ISBN:</label>
+        {{ form.isbn }}
+        <br>
+        <input type="submit" value="Remove Book">
+    </form>
+{% endblock %}
