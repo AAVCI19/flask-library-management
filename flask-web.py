@@ -221,7 +221,7 @@ def edit_user():
     cursor = mysql.cursor()
     form = EditUserForm(request.form)
     user = None  # Initialize user as None
-
+    error_message = None
     if request.method == 'POST' and form.validate():
         user_id = form.user_id.data
         cursor.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
