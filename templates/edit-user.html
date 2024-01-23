@@ -57,8 +57,11 @@
 {% block body %}
   <h1>Edit User</h1>
   <form method="POST">
-    <label for="user_id">User ID:</label>
-    <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+    <label for="userName">UserName:</label>
+    <input type="text" id="userName" name="userName" value="{{ user.user_name }}">
+    <br>
+    <label for="userPassword">User Password:</label>
+    <input type="text" id="userPassword" name="userPassword" value="{{ user.userPassword }}">
     <br>
     <label for="address">Address:</label>
     <input type="text" id="address" name="address" value="{{ user.address }}">
@@ -68,4 +71,6 @@
     <br>
     <input type="submit" value="Save Changes">
   </form>
+
 {% endblock %}
+

@@ -58,11 +58,10 @@
 
 {% block body %}
     <h2>Remove User</h2>
-    <p>Enter the ID of the user to remove:</p>
     <form name="remove-user" method="POST">
         {{ form.csrf_token }}
-        <label for="id">User ID:</label>
-        {{ form.id }}
+        <label for="userName">Username:</label>
+        {{ form.userName }}
         <br>
         <input type="submit" value="Remove User">
     </form>
