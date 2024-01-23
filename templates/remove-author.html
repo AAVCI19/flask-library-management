@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Remove Author</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Remove Author</h2>
+    <form name="remove-author" method="POST">
+        {{ form.csrf_token }}
+        <label for="authorName">Author Name:</label>
+        {{ form.authorName }}
+        <br>
+        <input type="submit" value="Remove Author">
+    </form>
+{% endblock %}

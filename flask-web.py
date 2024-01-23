@@ -138,6 +138,66 @@ def edit_user():
     return render_template("edit-user.html", form=form, user=user, error_message=error_message)
 
 
+
+class AddAuthorForm(Form):
+    authorName = StringField('authorName', [validators.Length(min=1, max=200)])
+
+@app.route("/add-author", methods=['GET', 'POST'])
+def add_author():
+    cursor = mysql.cursor()
+    form = AddAuthorForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        authorName = form.authorName.data
+
+        # Find the maximum author_id and increment it
+        cursor.execute("SELECT MAX(author_id) FROM authors")
+        max_author_id = cursor.fetchone()[0]
+        next_author_id = max_author_id + 1
+
+        # Insert the new author with the manually incremented author_id
+        cursor.execute("INSERT INTO authors (author_id, name_surname) VALUES (%s, %s)", (next_author_id, authorName))
+        mysql.commit()
+
+        return redirect(url_for('home_page'))
+
+    return render_template("add-author.html", form=form)
+
+class RemoveAuthorForm(Form):
+    authorName = StringField('authorName', [validators.Length(min=1, max=200)])
+
+
+@app.route("/remove-author", methods=['GET', 'POST'])
+def remove_author():
+    form = RemoveAuthorForm(request.form)
+    if request.method == 'POST' and form.validate():
+        cursor = mysql.cursor()
+        authorName = form.authorName.data
+
+        # Check if the author exists
+        cursor.execute("SELECT author_id FROM authors WHERE name_surname = %s", (authorName,))
+        result = cursor.fetchone()
+
+        if result:
+            # Extract the author_id from the tuple
+            author_id = result[0]
+
+            # Delete related records in the "writtenby" table
+            cursor.execute("DELETE FROM writtenby WHERE author_id = %s", (author_id,))
+            
+            # Delete the author
+            cursor.execute("DELETE FROM authors WHERE author_id = %s", (author_id,))
+            mysql.commit()
+
+        return redirect(url_for('home_page'))
+
+    return render_template("remove-author.html", form=form)
+
+
+
+
+
+
 def issue_book():
     pass
 def return_book():

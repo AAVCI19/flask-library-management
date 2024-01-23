@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Add Author</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Add Author</h2>
+    <p>Enter the necessary information to add an author:</p>
+    <form name="add-author" method="POST">
+        {{ form.csrf_token }}
+        <label for="author_name">Author Name:</label>
+        {{ form.authorName }}
+        <br>
+        <input type="submit" value="Add Author">
+    </form>
+{% endblock %}
