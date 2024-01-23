@@ -177,6 +177,9 @@ def issue_book():
             cursor4.execute(query, (isbn,))
             mysql.commit()
 
+            
+        
+
         flash('Book issued', 'success')
         return redirect(url_for('home_page'))
     
@@ -184,11 +187,38 @@ def issue_book():
     return render_template("issue-book.html", form=form, selected_book=selected_book)
 
 
+class ReturnBookForm(Form):
+    isbn = StringField('isbn', [validators.Length(min = 1, max = 20)])
+
+
+@app.route("/return-book", methods=['GET', 'POST'])
 def return_book():
-    pass
-
-
-
+    form = ReturnBookForm(request.form)
+    print("hello")
+    if request.method == 'POST' and form.validate():
+        print("hello")
+        isbn = form.isbn.data
+        cursor1 = mysql.cursor()
+        return_date = date.today()
+        query = '''
+        Update borrows
+        Set return_date = %s, actual_return_date = %s
+        Where borrows.ISBN = %s 
+        '''
+        cursor1.execute(query, (return_date, return_date, isbn))
+        cursor2 = mysql.cursor()
+        query = '''
+        Update books
+        Set no_of_copies = no_of_copies + 1
+        Where books.ISBN = %s
+        '''
+        cursor2.execute(query, (isbn,))
+        mysql.commit()
+        print("succesfully returned book")
+        flash('Book successfully returned', 'success')
+        return redirect(url_for('home_page'))
+    
+    return render_template("return-book.html")
 
 class AddUserForm(Form):
     """username = StringField('Username', [validators.Length(min=1, max=50)])
@@ -290,6 +320,7 @@ def edit_user():
 def analytics():
     return render_template("analytics.html")
 
+
 @app.route('/show-not-all-borrowed-books', methods = ["GET"]) 
 def show_not_all_borrowed_books():
     query = '''
@@ -298,7 +329,8 @@ def show_not_all_borrowed_books():
         From books 
         Left Join borrows on books.ISBN = borrows.ISBN
         Group By books.ISBN
-        Having available_copies > 0 OR available_copies is null;
+        Having available_copies > 0 OR available_copies is null
+        Limit 100;
     '''
     cursor = mysql.cursor()
     cursor.execute(query)
