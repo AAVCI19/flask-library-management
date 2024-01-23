@@ -6,7 +6,7 @@ from wtforms import Form, BooleanField, IntegerField, StringField, PasswordField
 
 app = Flask(__name__)
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'Frhtzn.49'
 app.config['MYSQL_DB'] = 'library'
 app.config['MYSQL_HOST'] = 'localhost'
 
