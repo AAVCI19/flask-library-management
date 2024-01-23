@@ -505,6 +505,20 @@ def edit_book():
 
     return render_template('edit-book.html', form=form)
 
+@app.route('/most-active-users', methods = ["GET"])
+def show_most_active_users():
+    query = '''
+        SELECT users.user_id, users.user_name, COUNT(*) AS total_borrows
+        FROM users JOIN borrows ON users.user_id = borrows.user_id
+        GROUP BY users.user_id, users.user_name
+        ORDER BY total_borrows DESC
+        LIMIT 10;
+    '''
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template("most-active-users.html", data = data)
+
 if __name__ == "__main__":
     app.run(debug=True)
     show_borrowing_records()
